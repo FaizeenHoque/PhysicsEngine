@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/faizeenhoque/Desktop/PhysicsEngine
+CXX_INCLUDES = -I/home/faizeenhoque/Desktop/PhysicsEngine -isystem /usr/include/SDL2
 
-CXX_FLAGS = -O3 -DNDEBUG -std=c++17 -I/usr/include
+CXX_FLAGS = -O3 -DNDEBUG -std=c++17
 

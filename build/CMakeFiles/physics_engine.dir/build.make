@@ -96,6 +96,7 @@ physics_engine_EXTERNAL_OBJECTS =
 physics_engine: CMakeFiles/physics_engine.dir/main.cpp.o
 physics_engine: CMakeFiles/physics_engine.dir/build.make
 physics_engine: CMakeFiles/physics_engine.dir/compiler_depend.ts
+physics_engine: /usr/lib/libSDL2-2.0.so.0.3200.56
 physics_engine: CMakeFiles/physics_engine.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/faizeenhoque/Desktop/PhysicsEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable physics_engine"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/physics_engine.dir/link.txt --verbose=$(VERBOSE)

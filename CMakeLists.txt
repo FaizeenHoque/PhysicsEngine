@@ -30,7 +30,27 @@ set(SOURCES
 
 add_executable(physics_engine ${SOURCES})
 
+# Ensure target uses the requested C++ standard
+target_compile_features(physics_engine PRIVATE cxx_std_17)
 target_include_directories(physics_engine PRIVATE ${PROJECT_SOURCE_DIR})
+
+# Try to find SDL2 via CMake package first, then fall back to pkg-config
+find_package(SDL2 REQUIRED)
+if(TARGET SDL2::SDL2)
+  target_link_libraries(physics_engine PRIVATE SDL2::SDL2)
+  target_include_directories(physics_engine PRIVATE ${SDL2_INCLUDE_DIRS})
+else()
+  # Fallback: try pkg-config
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(SDL2_PKG REQUIRED sdl2)
+  if(SDL2_PKG_FOUND)
+    target_include_directories(physics_engine PRIVATE ${SDL2_PKG_INCLUDE_DIRS})
+    target_link_libraries(physics_engine PRIVATE ${SDL2_PKG_LIBRARIES})
+    target_compile_options(physics_engine PRIVATE ${SDL2_PKG_CFLAGS_OTHER})
+  else()
+    message(FATAL_ERROR "SDL2 not found. Install SDL2 development headers or provide SDL2 package for CMake.")
+  endif()
+endif()
 
 install(TARGETS physics_engine
   RUNTIME DESTINATION bin
