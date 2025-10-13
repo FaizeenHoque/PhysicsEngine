@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/faizeenhoque/Desktop/PhysicsEngine
 
-CXX_FLAGS = -O3 -DNDEBUG -std=c++17
+CXX_FLAGS = -O3 -DNDEBUG -std=c++17 -I/usr/include
 
