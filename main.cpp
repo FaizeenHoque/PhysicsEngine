@@ -106,28 +106,23 @@ int main() {
             obj.updatePos();
             obj.drawCircle(renderer, obj.position.x, obj.position.y, obj.radius);
 
-            // // Bottom
-            // if (obj.position.y + obj.radius > screenSize.y) {
-            //     obj.position.y = screenSize.y - obj.radius;
-            //     obj.velocity.y *= -0.95f;
-            // }
+            // Y-axis
+            if (obj.position.y - obj.radius < 0) {
+                obj.position.y = obj.radius;
+                obj.velocity.y *= -0.95f;
+            } else if (obj.position.y + obj.radius > screenSize.y) {
+                obj.position.y = screenSize.y - obj.radius;
+                obj.velocity.y *= -0.95f;
+            }
 
-            // // Top
-            // if (obj.position.y - obj.radius < 0) {
-            //     obj.position.y = obj.radius;
-            //     obj.velocity.y *= -0.95f;
-            // }
-
-            // if (obj.position.x - obj.radius < 0) {
-            //     obj.position.x = obj.radius;
-            //     obj.velocity.x *= -0.95f;
-            // }
-            // if (obj.position.x + obj.radius > screenSize.x) {
-            //     obj.position.x = screenSize.x - obj.radius;
-            //     obj.velocity.x *= -0.95f;
-            // }
-
-
+            // X-axis
+            if (obj.position.x - obj.radius < 0) {
+                obj.position.x = obj.radius;
+                obj.velocity.x *= -0.95f;
+            } else if (obj.position.x + obj.radius > screenSize.x) {
+                obj.position.x = screenSize.x - obj.radius;
+                obj.velocity.x *= -0.95f;
+            }
         }
 
         SDL_RenderPresent(renderer);
