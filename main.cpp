@@ -2,32 +2,47 @@
 #include <iostream>
 #include <vector>
 
-struct Vect2 {
-    float v1;
-    float v2;
+const int FPS = 60;
+const int frameDelay = 1000 / FPS;
+
+const float dt = 1.0 / FPS;
+const float gravity = 9.81f * 100; // pixels per second squared
+
+struct Vec2 {
+    float x;
+    float y;
+
+    Vec2 operator+(const Vec2& other) const { return {x + other.x, y + other.y}; }
+    Vec2 operator-(const Vec2& other) const { return {x - other.x, y - other.y}; }
+    Vec2 operator*(float scalar) const { return {x * scalar, y * scalar}; }
+    Vec2& operator+=(const Vec2& other) { x += other.x; y += other.y; return *this; }
+    float length() const { return std::sqrt(x*x + y*y); }
+    Vec2 normalize() const { float len = length(); return len ? Vec2{x/len, y/len} : Vec2{0,0}; }
 };
 
 class Object
 {
 public:
-    Vect2 position;
-    Vect2 velocity;
+    Vec2 position;
+    Vec2 velocity;
     int radius;
+    float mass;
 
-    Object(Vect2 pos, Vect2 vel, int r) {
+    Object(Vec2 pos, Vec2 vel, int r, int m) {
         this->position = pos;
         this->velocity = vel;
         this->radius = r;
+        this->mass = m; 
     }
 
-    void accelerate(Vect2 acc) {
-        this->velocity.v1 += acc.v1;
-        this->velocity.v2 += acc.v2;
+    void accelerate(Vec2 acc) {
+        this->velocity.x += acc.x * dt;
+        this->velocity.y += acc.y * dt;
     }
 
     void updatePos() {
-        this->position.v1 += velocity.v1;
-        this->position.v2 += velocity.v2;
+        this->position.x += velocity.x * dt;
+        this->position.y += velocity.y * dt;
     }
 
     void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
@@ -44,37 +59,34 @@ public:
 };
 
 std::vector<Object> objs = {
-    Object({100, 100}, {0, 0}, 30),
-    Object({200, 50}, {0, 0}, 30)
+    Object({100, 100}, {0, 0}, 30, 7.34767309 * pow(10, 22)),
+    Object({700, 100}, {0, 0}, 30, 7.34767309 * pow(10, 22))
 };
 
 
 int main() {
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    Vect2 screenSize;
-    screenSize.v1 = 800;
-    screenSize.v2 = 600;
+    Vec2 screenSize;
+    screenSize.x = 800;
+    screenSize.y = 600;
 
     SDL_Window* window = SDL_CreateWindow(
         "Physics Engine",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        screenSize.v1,
-        screenSize.v2,
+        screenSize.x,
+        screenSize.y,
         SDL_WINDOW_SHOWN
     );
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
-    Vect2 pos = {50, 50};
-    Vect2 vel = {0, 0};
+    Vec2 pos = {50, 50};
+    Vec2 vel = {0, 0};
     int radius = 20;
 
     SDL_Event event;
     bool running = true;
-
-    const int FPS = 60;
-    const int frameDelay = 1000 / FPS;
 
     while (running) {
         Uint32 frameStart = SDL_GetTicks();
@@ -90,30 +102,30 @@ int main() {
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         for (auto& obj : objs) {
-            obj.accelerate({0, 0.7}); // Gravity
+            obj.accelerate({0, gravity});
             obj.updatePos();
-            obj.drawCircle(renderer, obj.position.v1, obj.position.v2, obj.radius);
+            obj.drawCircle(renderer, obj.position.x, obj.position.y, obj.radius);
 
-            // Bottom
-            if (obj.position.v2 + obj.radius > screenSize.v2) {
-                obj.position.v2 = screenSize.v2 - obj.radius;
-                obj.velocity.v2 *= -0.95f;
-            }
+            // // Bottom
+            // if (obj.position.y + obj.radius > screenSize.y) {
+            //     obj.position.y = screenSize.y - obj.radius;
+            //     obj.velocity.y *= -0.95f;
+            // }
 
-            // Top
-            if (obj.position.v2 - obj.radius < 0) {
-                obj.position.v2 = obj.radius;
-                obj.velocity.v2 *= -0.95f;
-            }
+            // // Top
+            // if (obj.position.y - obj.radius < 0) {
+            //     obj.position.y = obj.radius;
+            //     obj.velocity.y *= -0.95f;
+            // }
 
-            if (obj.position.v1 - obj.radius < 0) {
-                obj.position.v1 = obj.radius;
-                obj.velocity.v1 *= -0.95f;
-            }
-            if (obj.position.v1 + obj.radius > screenSize.v1) {
-                obj.position.v1 = screenSize.v1 - obj.radius;
-                obj.velocity.v1 *= -0.95f;
-            }
+            // if (obj.position.x - obj.radius < 0) {
+            //     obj.position.x = obj.radius;
+            //     obj.velocity.x *= -0.95f;
+            // }
+            // if (obj.position.x + obj.radius > screenSize.x) {
+            //     obj.position.x = screenSize.x - obj.radius;
+            //     obj.velocity.x *= -0.95f;
+            // }
 
 
         }
